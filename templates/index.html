@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three-Point Test Cross</title>
+    <script>
+        async function calculateGenetics() {
+            const data = {
+                parental1: document.getElementById("parental1").value,
+                parental2: document.getElementById("parental2").value,
+                single_crossover1: document.getElementById("single_crossover1").value,
+                single_crossover2: document.getElementById("single_crossover2").value,
+                single_crossover3: document.getElementById("single_crossover3").value,
+                single_crossover4: document.getElementById("single_crossover4").value,
+                double_crossover1: document.getElementById("double_crossover1").value,
+                double_crossover2: document.getElementById("double_crossover2").value
+            };
+
+            const response = await fetch('/calculate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            if (result.error) {
+                document.getElementById("result").innerHTML = `<p style="color:red;">Error: ${result.error}</p>`;
+            } else {
+                document.getElementById("result").innerHTML = `
+                    <h3>Results:</h3>
+                    <p>Distance between A and B: ${result.map_distance_AB} cM</p>
+                    <p>Distance between B and C: ${result.map_distance_BC} cM</p>
+                    <p>Distance between A and C: ${result.map_distance_AC} cM</p>
+                    <p><strong>Gene Order: ${result.gene_order}</strong></p>
+                `;
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Three-Point Test Cross</h1>
+    <p>Enter the number of offspring for each phenotype:</p>
+
+    <label>Parental Type 1: <input type="number" id="parental1"></label><br>
+    <label>Parental Type 2: <input type="number" id="parental2"></label><br>
+    <label>Single Crossover 1: <input type="number" id="single_crossover1"></label><br>
+    <label>Single Crossover 2: <input type="number" id="single_crossover2"></label><br>
+    <label>Single Crossover 3: <input type="number" id="single_crossover3"></label><br>
+    <label>Single Crossover 4: <input type="number" id="single_crossover4"></label><br>
+    <label>Double Crossover 1: <input type="number" id="double_crossover1"></label><br>
+    <label>Double Crossover 2: <input type="number" id="double_crossover2"></label><br>
+
+    <button onclick="calculateGenetics()">Calculate</button>
+
+    <div id="result"></div>
+</body>
+
+</html>
